@@ -1,56 +1,55 @@
-var $input,
-    $ul,
-    url   = 'https://yspuku7qvh9u4cr3.firebaseio.com/.json';
+(function() {
 
-// event listener - wait for DOM content to load
-// and then call init function
-// document.addEventListener('DOMContentLoaded', init);
-$(document).ready(init);
+   'use strict';
 
+  var $input,
+      $ul,
+      url   = 'https://yspuku7qvh9u4cr3.firebaseio.com/.json';
 
-// initialization function
-function init() {
-  $input = $('input');
-  $ul    = $('ul');
+  // initialization function
+  $(function init() {
+    $input = $('input');
+    $ul    = $('ul');
 
-  $input.change(getUpdateAndSplit);
-  getUpdateAndSplit();
-}
-
-function getUpdateAndSplit(){
-  var count = $input.val();
-  // clear contents of ul
-  $ul.empty();
-  // ajax call
-  $.get(url, function(res){
-    var chunkedStudents = chunkData(res['c8-students'], count);
-    $ul.append(createList(chunkedStudents));
+    $input.change(getUpdateAndSplit);
+    getUpdateAndSplit();
   });
-};
 
-function chunkData(data, count){
-  return _(data)
-    .map(function(value){
-      return value.firstName + ' ' + value.lastName[0] + '.';
+  function getUpdateAndSplit(){
+    var count = $input.val();
+    // clear contents of ul
+    $ul.empty();
+    // ajax call
+    $.get(url, function(res){
+      var chunkedStudents = chunkData(res['c8-students'], count);
+      $ul.append(createList(chunkedStudents));
+    });
+  };
+
+  function chunkData(data, count){
+    return _(data)
+      .map(function(value){
+        return value.firstName + ' ' + value.lastName[0] + '.';
+      })
+      .shuffle()
+      .chunk(count)
+      .value();
+  }
+
+  function createList(array) {
+    var groupList = [];
+
+    _.forEach(array, function(team){
+      var $ol = $('<ol></ol>');
+
+      _.forEach(team, function(teamMember){
+        var $li = $('<li>' + teamMember + '</li>');
+        $ol.append($li);
+      })
+
+      groupList.push($ol);
     })
-    .shuffle()
-    .chunk(count)
-    .value();
-}
 
-function createList(array) {
-  var groupList = [];
-
-  _.forEach(array, function(team){
-    var $ol = $('<ol></ol>');
-
-    _.forEach(team, function(teamMember){
-      var $li = $('<li>' + teamMember + '</li>');
-      $ol.append($li);
-    })
-
-    groupList.push($ol);
-  })
-
-  return groupList;
-}
+    return groupList;
+  }
+})();
