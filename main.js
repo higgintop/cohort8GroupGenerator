@@ -33,7 +33,7 @@ function createList(array) {
     var $ol = $('<ol></ol>');
 
     _.forEach(team, function(teamMember){
-      var $li = $('<li><' + teamMember + '/li>');
+      var $li = $('<li>' + teamMember + '</li>');
       $ol.append($li);
     })
 
